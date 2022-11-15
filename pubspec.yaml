@@ -9,15 +9,14 @@ dev_dependencies:
   lints: ^2.0.0
 
 dependencies: 
-  nyxx: ^4.2.0
+  nyxx: ^4.2.1
   nyxx_lavalink: ^3.1.0
-  nyxx_interactions: ^4.4.0
+  nyxx_interactions:
   nyxx_commands:
      git:
       url: https://github.com/nyxx-discord/nyxx_commands
       ref: next
  # nyxx_commands:
-
   ntfy_dart:
     path: /home/jackr/Projects/IdeaProjects/ntfy_dart
   chess: ^0.8.0

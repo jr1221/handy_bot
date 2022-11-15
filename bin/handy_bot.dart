@@ -27,8 +27,7 @@ Future<void> main() async {
           defaultResponseLevel: ResponseLevel.public));
 
   final outerBot = NyxxFactory.createNyxxWebsocket(
-      envVars['HANDYBOT_API_TOKEN']!,
-      GatewayIntents.allUnprivileged,
+      envVars['HANDYBOT_API_TOKEN']!, GatewayIntents.allUnprivileged,
       options: ClientOptions(
           initialPresence: PresenceBuilder.of(
               status: UserStatus.online,
@@ -44,13 +43,15 @@ Future<void> main() async {
 
   final chessCommand = ChessCommand();
 
-  final infoCommand = InfoCommand(outerBot: outerBot, feedbackLog: File(envVars['HANDYBOT_FEEDBACK_LOG_PATH']!));
+  final infoCommand = InfoCommand(
+      outerBot: outerBot,
+      feedbackLog: File(envVars['HANDYBOT_FEEDBACK_LOG_PATH']!));
 
   final musicalCommand = MusicalCommand(
       vcChannelGuildId: Snowflake(envVars['HANDYBOT_GUILD_ID']),
       vcChannelId: Snowflake(envVars['HANDYBOT_GUILD_VC_CHANNEL_ID']),
-      cluster:
-          ICluster.createCluster(outerBot, Snowflake(envVars['HANDYBOT_CLUSTER_ID'])),
+      cluster: ICluster.createCluster(
+          outerBot, Snowflake(envVars['HANDYBOT_CLUSTER_ID'])),
       outerBot: outerBot);
 
   final ntfyCommand = NtfyCommand();

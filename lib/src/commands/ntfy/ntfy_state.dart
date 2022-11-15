@@ -4,8 +4,6 @@ import 'package:ntfy_dart/ntfy_dart.dart';
 class NtfyState {
   final NtfyClient _client = NtfyClient();
 
-  List<Stream<MessageResponse>> _streamListeners = List.empty(growable: true);
-
   void changeBasePath(Uri basePath) {
     _client.changeBasePath(basePath);
   }
@@ -20,6 +18,4 @@ class NtfyState {
         scheduled: opts.scheduled ?? false,
         filters: opts.filters);
   }
-
-  void subscribeListen(PollWrapper opts) {}
 }

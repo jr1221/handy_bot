@@ -9,7 +9,6 @@ import '../../project_constants.dart';
 import 'feedback_model.dart';
 import 'info_utils.dart';
 
-
 class InfoCommand {
   final INyxxWebsocket outerBot;
   final File feedbackLog;

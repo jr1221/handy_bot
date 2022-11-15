@@ -99,7 +99,6 @@ class NtfyCommand {
 
   Map<IUser, PublishableMessage> publishQueue = {};
   Map<IUser, PollWrapper> pollQueue = {};
-  Map<IUser, PollWrapper> subscribeQueue = {};
 
   NtfyCommand() : _ntfyState = NtfyState();
 
@@ -852,9 +851,13 @@ class NtfyCommand {
                         'Could not parse topics, please try again.'));
                   }
                 })),
-            ChatGroup(
-                'subscribe', 'Configure bot responses when a message is sent',
-                children: [])
+            ChatCommand(
+                'subscribe',
+                'Configure bot responses when a message is sent',
+                id('ntfy-subscribe', (IChatContext context) {
+                  context.respond(MessageBuilder.content(
+                      'This functionality is not yet available.  Please see /ntfy info to setup notifications for a message.'));
+                }))
           ]);
 }
 
