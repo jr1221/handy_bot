@@ -187,9 +187,9 @@ class NtfyCommand {
       ChatGroup('ntfy', ProjectConstants.commandDefinitions['ntfy']!,
           children: [
             ChatCommand(
-                'about',
+                'help',
                 'Get info about ntfy',
-                id('ntfy-about', (IChatContext context) {
+                id('ntfy-help', (IChatContext context) {
                   EmbedBuilder aboutEmbed = EmbedBuilder()
                     ..title = 'About Ntfy'
                     //   ..description = 'How ntfy works'
@@ -261,6 +261,8 @@ class NtfyCommand {
                     ..delay = schedSet;
 
                   ComponentMessageBuilder askOps = ComponentMessageBuilder()
+                    ..content =
+                        'Configure your message below: (can only click each button once).'
                     ..addComponentRow(ComponentRowBuilder()
                       ..addComponent(
                           MultiselectBuilder(ntfyPublishPrioritySelectId, [
