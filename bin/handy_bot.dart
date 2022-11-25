@@ -6,7 +6,7 @@ import 'package:nyxx/nyxx.dart';
 import 'package:nyxx_commands/nyxx_commands.dart';
 import 'package:nyxx_lavalink/nyxx_lavalink.dart';
 
-/// Environment variables
+/// Environment variables (pass in with --define=<KEY>=<VALUE>, system environment variables not supported!
 /// HANDYBOT_API_TOKEN
 ///
 /// (for info feedback storage)
@@ -17,17 +17,16 @@ import 'package:nyxx_lavalink/nyxx_lavalink.dart';
 /// HANDYBOT_GUILD_ID
 /// HANDYBOT_CLUSTER_ID
 Future<void> main() async {
-  final envVars = Platform.environment;
-
   CommandsPlugin commands = CommandsPlugin(
       prefix: mentionOr((_) => '|'),
-      guild: Snowflake(envVars['HANDYBOT_GUILD_ID']),
+      guild: Snowflake(String.fromEnvironment('HANDYBOT_GUILD_ID')),
       options: CommandsOptions(
           type: CommandType.slashOnly,
           defaultResponseLevel: ResponseLevel.public));
 
   final outerBot = NyxxFactory.createNyxxWebsocket(
-      envVars['HANDYBOT_API_TOKEN']!, GatewayIntents.allUnprivileged,
+      String.fromEnvironment('HANDYBOT_API_TOKEN'),
+      GatewayIntents.allUnprivileged,
       options: ClientOptions(
           initialPresence: PresenceBuilder.of(
               status: UserStatus.online,
@@ -45,13 +44,14 @@ Future<void> main() async {
 
   final infoCommand = InfoCommand(
       outerBot: outerBot,
-      feedbackLog: File(envVars['HANDYBOT_FEEDBACK_LOG_PATH']!));
+      feedbackLog: File(String.fromEnvironment('HANDYBOT_FEEDBACK_LOG_PATH')));
 
   final musicalCommand = MusicalCommand(
-      vcChannelGuildId: Snowflake(envVars['HANDYBOT_GUILD_ID']),
-      vcChannelId: Snowflake(envVars['HANDYBOT_GUILD_VC_CHANNEL_ID']),
+      vcChannelGuildId: Snowflake(String.fromEnvironment('HANDYBOT_GUILD_ID')),
+      vcChannelId:
+          Snowflake(String.fromEnvironment('HANDYBOT_GUILD_VC_CHANNEL_ID')),
       cluster: ICluster.createCluster(
-          outerBot, Snowflake(envVars['HANDYBOT_CLUSTER_ID'])),
+          outerBot, Snowflake(String.fromEnvironment('HANDYBOT_CLUSTER_ID'))),
       outerBot: outerBot);
 
   final ntfyCommand = NtfyCommand();
