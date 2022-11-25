@@ -18,7 +18,8 @@ dependencies:
       ref: next
  # nyxx_commands:
   ntfy_dart:
-    path: /home/jackr/Projects/IdeaProjects/ntfy_dart
+    git:
+      url: https://github.com/jr1221/ntfy_dart
   chess: ^0.8.0
 
 
