@@ -294,15 +294,14 @@ class NtfyCommand {
 
                   await context.respond(askOps);
 
-                  // handle priority selection, responding with confirmation TODO: fix select/T
+                  // handle priority selection, responding with confirmation
                   context
-                      .awaitSelection<MultiselectOptionBuilder>(
-                          ntfyPublishPrioritySelectId)
+                      .awaitSelection<String>(ntfyPublishPrioritySelectId)
                       .then((event) {
-                    publishQueue[event.user]?.priority =
-                        PriorityLevels.values.byName(event.selected.value);
+                    publishQueue[event.user]?.priority = PriorityLevels.values
+                        .byName(event.selected.toLowerCase());
                     event.respond(ComponentMessageBuilder()
-                      ..content = 'Priority of ${event.selected.value} saved!'
+                      ..content = 'Priority of ${event.selected} saved!'
                       ..componentRows = []);
                   });
 
@@ -689,18 +688,19 @@ class NtfyCommand {
                                 headers = null;
                               }
 
-                              // handle http action select and add HTTP action, responding with confirmation TODO: fix select/T
-                              httpModalEvent.getSelection<
-                                      MultiselectOptionBuilder>(
-                                  [
-                                    MultiselectOptionBuilder('POST', 'POST')
-                                      ..description = 'recommended',
-                                    MultiselectOptionBuilder('PUT', 'PUT'),
-                                    MultiselectOptionBuilder('GET', 'GET')
-                                  ],
+                              // handle http action select and add HTTP action, responding with confirmation
+                              httpModalEvent.getSelection<String>(
+                                  ['POST', 'PUT', 'GET'],
                                   MessageBuilder.content(
-                                      '$extraProblems View action saved.  Choose the request method from the dropdown to finalize.')).then(
-                                  (httpTypeSelect) {
+                                      '$extraProblems View action saved.  Choose the request method from the dropdown to finalize.'),
+                                  toMultiSelect: (value) {
+                                final builder =
+                                    MultiselectOptionBuilder(value, value);
+                                if (value == 'POST') {
+                                  builder.description = 'recommended';
+                                }
+                                return builder;
+                              }).then((httpTypeSelect) {
                                 // must use context.user here unfortunately
                                 publishQueue[context.user]?.addHttpAction(
                                     label: httpModalEvent[
@@ -709,12 +709,12 @@ class NtfyCommand {
                                         ntfyPublishHttpActionInputUrlId]),
                                     headers: headers,
                                     method: MethodTypes.values
-                                        .byName(httpTypeSelect.value),
+                                        .byName(httpTypeSelect.toLowerCase()),
                                     body: httpModalEvent[
                                         ntfyPublishHttpActionInputBodyId],
                                     clear: clear);
                                 httpModalEvent.respond(MessageBuilder.content(
-                                    'Method ${httpTypeSelect.label} saved!'));
+                                    'Method $httpTypeSelect saved!'));
                               });
                             } else {
                               await httpModalEvent.respond(MessageBuilder.content(
@@ -816,15 +816,15 @@ class NtfyCommand {
                               event.respond(
                                   MessageBuilder.content('Filters saved'));
                             }));
-                    // handle priorities multiselect, responding with confirmation TODO: fix select/T
+                    // handle priorities multiselect, responding with confirmation
                     context
-                        .awaitMultiSelection<MultiselectOptionBuilder>(
+                        .awaitMultiSelection<String>(
                       ntfyPollPriorityId,
                     )
                         .then((event) {
                       final priorities = event.selected
-                          .map<PriorityLevels>(
-                              (e) => PriorityLevels.values.byName(e.value))
+                          .map<PriorityLevels>((e) =>
+                              PriorityLevels.values.byName(e.toLowerCase()))
                           .toList();
                       if (pollQueue[event.user]?.filters != null) {
                         pollQueue[event.user]?.filters?.priority = priorities;
