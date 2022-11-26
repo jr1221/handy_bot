@@ -5,9 +5,7 @@ import '../../project_constants.dart';
 import 'chess_state.dart';
 
 class ChessCommand {
-  final ChessState _chess;
-
-  ChessCommand() : _chess = ChessState();
+  Map<IUser, ChessState> chessGames = {};
 
   static const String wrongUserCheckId = 'wrong-check-user';
 
@@ -30,7 +28,8 @@ class ChessCommand {
               'board',
               'Show the current situation',
               id('chess-board', (IChatContext context) {
-                context.respond(MessageBuilder.content(_chess.gameBoard()));
+                context.respond(MessageBuilder.content(
+                    chessGames[context.user]?.gameBoard() ?? 'No game found!'));
               })),
           ChatCommand(
               'get-moves',
@@ -39,8 +38,17 @@ class ChessCommand {
                   [@Name('square')
                   @Description('Certain square to get options for')
                       ChessSquare? certainSquare]) {
-                context.respond(
-                    MessageBuilder.content(_chess.getMoves(certainSquare)));
+                context.respond(MessageBuilder.content(
+                    chessGames[context.user]?.getMoves(certainSquare) ??
+                        'No game found!'));
+              })),
+          ChatCommand(
+              'get-history',
+              'Show game history',
+              id('chess-history', (IChatContext context) {
+                context.respond(MessageBuilder.content(
+                    chessGames[context.user]?.history().emptyToNull() ??
+                        'No history for this!'));
               })),
           ChatCommand(
               'start',
@@ -52,9 +60,10 @@ class ChessCommand {
                   @Name('black')
                   @Description('Black player')
                       IMember blackPlayer) async {
-                context.respond(MessageBuilder.content(_chess.start(
-                    await whitePlayer.user.getOrDownload(),
-                    await blackPlayer.user.getOrDownload())));
+                chessGames[context.user] = ChessState();
+                context.respond(MessageBuilder.content(chessGames[context.user]!
+                    .start(await whitePlayer.user.getOrDownload(),
+                        await blackPlayer.user.getOrDownload())));
               })),
           ChatCommand(
               'move',
@@ -70,7 +79,8 @@ class ChessCommand {
                   @Description('Piece letter to promote pawn to')
                       String? promotion]) {
                 context.respond(MessageBuilder.content(
-                    _chess.move(fromCmd, toCmd, promotion)));
+                    chessGames[context.user]?.move(fromCmd, toCmd, promotion) ??
+                        'No game found!'));
               }),
               singleChecks: [_turnMoveCheck])
         ],
@@ -82,11 +92,11 @@ class ChessCommand {
       try {
         view = view.trim().toLowerCase();
         if (!squareLetters.contains(view.substring(0, 1))) {
-          throw Exception;
+          return null;
         }
         if ((!(int.parse(view.substring(1, 2)) >= 1)) ||
             (!(int.parse(view.substring(1, 2)) <= 8))) {
-          throw Exception;
+          return null;
         }
         return ChessSquare(
             row: view.substring(0, 1), col: int.parse(view.substring(1, 2)));
@@ -96,7 +106,15 @@ class ChessCommand {
     },
   );
 
-  Check get _turnMoveCheck =>
-      Check(((context) => _chess.validateTurn(context.user)),
-          name: wrongUserCheckId, allowsDm: false);
+  Check get _turnMoveCheck => Check(
+      ((context) =>
+          chessGames[context.user]?.validateTurn(context.user) ?? false),
+      name: wrongUserCheckId,
+      allowsDm: false);
+}
+
+extension on String {
+  String? emptyToNull() {
+    return isNotEmpty ? this : null;
+  }
 }

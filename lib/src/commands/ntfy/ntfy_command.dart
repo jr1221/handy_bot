@@ -1,5 +1,5 @@
-import 'package:handy_bot/handy_bot.dart';
-import 'package:handy_bot/src/commands/ntfy/ntfy_state.dart';
+import '../../project_constants.dart';
+import './ntfy_state.dart';
 import 'package:ntfy_dart/ntfy_dart.dart';
 import 'package:nyxx/nyxx.dart' hide ActionTypes;
 import 'package:nyxx_commands/nyxx_commands.dart';
@@ -863,12 +863,6 @@ class NtfyCommand {
           ]);
 }
 
-extension EmptyCheck on String {
-  String? emptyToNull() {
-    return isNotEmpty ? this : null;
-  }
-}
-
 class PollWrapper {
   List<String> topics;
 
@@ -879,4 +873,10 @@ class PollWrapper {
   FilterOptions? filters;
 
   PollWrapper(this.topics);
+}
+
+extension on String {
+  String? emptyToNull() {
+    return isNotEmpty ? this : null;
+  }
 }

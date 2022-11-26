@@ -1,5 +1,6 @@
-import 'package:handy_bot/src/commands/ntfy/ntfy_command.dart';
 import 'package:ntfy_dart/ntfy_dart.dart';
+
+import 'ntfy_command.dart';
 
 class NtfyState {
   final NtfyClient _client = NtfyClient();

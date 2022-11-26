@@ -7,12 +7,18 @@ class ChessState {
   IUser? _whitePlayer;
   IUser? _blackPlayer;
 
+  String _moveToString(Move move) {
+    return '${move.piece.prettyName()} from ${move.fromAlgebraic} to ${move.toAlgebraic}';
+  }
+
   List<String> _currentIssues() {
     List<String> currentIssues = [];
     if (_chessGame.in_check) {
       currentIssues.add('\u{2714} In check'); // Check mark
     }
     if (_chessGame.in_checkmate) {
+      currentIssues
+          .removeLast(); // get rid of check, as checkis true when checkmate is always
       currentIssues.add('\u{2611} In checkmate'); // Check mark with box
     }
     if (_chessGame.in_draw) {
@@ -37,7 +43,7 @@ class ChessState {
       messageBack.writeln('\u{274C} Game Over!!'); // Red cross mark
       if (_chessGame.turn == Chess.WHITE) {
         messageBack.writeln(
-            '\u{27A1}${_whitePlayer?.username}\u{25FD} won'); // Right arrow, white small-medium square
+            '\u{27A1}${_whitePlayer?.username}\u{1F532} won'); // Right arrow, white small-medium square
       } else {
         messageBack.writeln(
             '\u{27A1}${_whitePlayer?.username}\u{1F533} won'); // Right arrow, black small-medium square
@@ -47,7 +53,7 @@ class ChessState {
     } else if (_whitePlayer != null) {
       if (_chessGame.turn == Chess.WHITE) {
         messageBack.writeln(
-            'It is ${_whitePlayer?.username}\'s\u{25FD} turn'); // white square
+            'It is ${_whitePlayer?.username}\'s\u{1F532} turn'); // white square
       } else {
         messageBack.writeln(
             'It is ${_blackPlayer?.username}\'s\u{1F533} turn'); // black square
@@ -73,6 +79,20 @@ class ChessState {
     return messageBack.toString();
   }
 
+  String history() {
+    StringBuffer messageBack = StringBuffer();
+    for (final state in _chessGame.history) {
+      if (state.turn == Chess.WHITE) {
+        messageBack.writeln(
+            '\u{1F532}${state.move_number}: ${_moveToString(state.move)}'); // white square
+      } else {
+        messageBack.writeln(
+            '\u{1F533}${state.move_number}: ${_moveToString(state.move)}'); // black square
+      }
+    }
+    return messageBack.toString();
+  }
+
   String getMoves(ChessSquare? certainSquare) {
     StringBuffer messageBack = StringBuffer();
     List<Move> possibleMoves;
@@ -92,8 +112,7 @@ class ChessState {
         messageBack.writeln('\u{2B07} All possible moves:'); // down arrow
       }
       for (Move aMove in possibleMoves) {
-        messageBack.writeln(
-            '${aMove.piece.prettyName()} from ${aMove.fromAlgebraic} to ${aMove.toAlgebraic}');
+        messageBack.writeln(_moveToString(aMove));
       }
     } else {
       if (certainSquare != null) {
@@ -113,9 +132,9 @@ class ChessState {
 
     StringBuffer messageBack = StringBuffer();
     _chessGame.reset();
-    messageBack.writeln('Starting a new game');
+    messageBack.writeln('Starting a new game...');
     messageBack.writeln(
-        '(UPPERCASE) ${_whitePlayer?.username} \u{25FD}  \u{1F19A}  \u{1F533} ${_blackPlayer?.username} (lowercase)'); // white square, VS, black square
+        '(UPPERCASE) ${_whitePlayer?.username} \u{1F532}  \u{1F19A}  \u{1F533} ${_blackPlayer?.username} (lowercase)'); // white square, VS, black square
     messageBack.writeln(_endTurnMessage());
     return messageBack.toString();
   }
@@ -138,6 +157,7 @@ class ChessState {
     if (didMove) {
       messageBack.writeln('\u{2705} Move success'); // green check mark
       messageBack.writeln('```${_chessGame.ascii}```');
+      messageBack.writeln(_moveToString(_chessGame.history.last.move));
     } else {
       messageBack.writeln('\u{274C} Move unsuccessful!'); // cross mark
     }
