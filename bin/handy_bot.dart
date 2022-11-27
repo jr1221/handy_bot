@@ -82,7 +82,7 @@ Future<void> main() async {
         switch (error.failed.name) {
           case ChessCommand.wrongUserCheckId:
             error.context.respond(MessageBuilder.content(
-                'It isn\'t your turn in this chess game!'));
+                'It isn\'t your turn in this chess game, or the game doesn\'t exist!'));
             return;
         }
 

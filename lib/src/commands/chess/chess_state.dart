@@ -8,7 +8,17 @@ class ChessState {
   IUser? _blackPlayer;
 
   String _moveToString(Move move) {
-    return '${move.piece.prettyName()} from ${move.fromAlgebraic} to ${move.toAlgebraic}';
+    StringBuffer messageBack = StringBuffer(
+        '${move.piece.prettyName()} from ${move.fromAlgebraic} to ${move.toAlgebraic}');
+
+    if (move.captured != null) {
+      messageBack.write(', capturing ${move.captured?.prettyName()}');
+    }
+    if (move.promotion != null) {
+      messageBack.write(', promoted to ${move.promotion?.prettyName()}');
+    }
+
+    return messageBack.toString();
   }
 
   List<String> _currentIssues() {
@@ -192,7 +202,7 @@ class ChessSquare {
   }
 }
 
-extension PrettyPieceNaming on PieceType {
+extension on PieceType {
   String prettyName() {
     switch (name.toString()) {
       case 'b':
