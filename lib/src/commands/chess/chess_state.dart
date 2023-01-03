@@ -108,10 +108,10 @@ class ChessState {
     List<Move> possibleMoves;
     if (certainSquare != null) {
       possibleMoves = _chessGame
-              .moves({"asObjects": true, "square": certainSquare.toString()})
+              .moves(square: certainSquare.toString(), asObjects: true)
           as List<Move>;
     } else {
-      possibleMoves = _chessGame.moves({"asObjects": true}) as List<Move>;
+      possibleMoves = _chessGame.moves(asObjects: true) as List<Move>;
     }
 
     if (possibleMoves.isNotEmpty) {

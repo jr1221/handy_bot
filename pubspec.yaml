@@ -1,6 +1,7 @@
 name: handy_bot
 description: A simple bot with a couple different functional slash commands.
 version: 0.0.1
+publish_to: none
 
 environment:
   sdk: '>=2.16.0 <3.0.0'
@@ -20,6 +21,8 @@ dependencies:
   ntfy_dart:
     git:
       url: https://github.com/jr1221/ntfy_dart
-  chess: ^0.8.0
+  chess:
+    git:
+      url: https://github.com/jr1221/chess.dart
 
 
